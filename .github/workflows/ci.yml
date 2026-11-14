@@ -1,0 +1,26 @@
+name: JPMC Midas Maven checks
+
+on:
+  push:
+    branches: [flow]
+  pull_request:
+    branches: [flow]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile-and-context-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Compile production and test sources
+        run: ./mvnw -B -DskipTests test-compile
+      - name: Verify Spring application context
+        run: ./mvnw -B -Dtest=TaskOneTests test
