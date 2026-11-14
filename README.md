@@ -12,7 +12,7 @@ The exercise is organized around a transaction-processing application. The sourc
 .
 ├── pom.xml
 ├── mvnw / mvnw.cmd
-├── application.yml
+├── src/main/resources/application.yml
 ├── services/
 └── src/
     ├── main/java/com/jpmc/midascore/
@@ -50,9 +50,18 @@ Some supplied task tests are deliberately interactive: they publish test transac
 
 ## Build status and reproducibility
 
-The current checked-in `pom.xml` has an empty dependencies section even though the source and tests import Spring Boot, Kafka, logging, and test APIs. As a result, a clean build may fail until the required dependencies and plugin configuration are restored. This README intentionally does not claim that the repository currently passes a clean Maven build.
+The Maven project now declares the Spring Boot JPA and Web starters, Spring Kafka, H2 for the local database, and the Spring Boot / Kafka test dependencies. The checked-in Maven Wrapper uses Java 17.
 
-Before presenting this as a completed engineering project, verify the dependency set, run the bounded tests separately from the interactive debugger tasks, document the exact JDK/Maven versions, and record a reproducible successful build.
+Run a bounded build and test the application context:
+
+```bash
+./mvnw -B -DskipTests test-compile
+./mvnw -B -Dtest=TaskOneTests test
+```
+
+The GitHub Actions workflow runs those same checks on pushes and pull requests to the `flow` branch. It deliberately does **not** run TaskTwo through TaskFive: those supplied exercises send transactions and wait in debugger loops by design. Run them manually according to the Forage task instructions and stop them after collecting the required observations.
+
+The CI check verifies compilation and application-context startup. It does not establish that the incomplete transaction-processing exercise is feature-complete or that the external transaction incentive service is available.
 
 ## Attribution
 
